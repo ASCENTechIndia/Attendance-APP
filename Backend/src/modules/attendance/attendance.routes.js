@@ -11,7 +11,9 @@ const {
   attendanceMonthlySummary,
   attendanceDailySummary,
   attendanceMonthlySummaryWeb,
-  attendanceDailySummaryWeb
+  attendanceDailySummaryWeb,
+  attendanceDailyDetails,
+  attendanceDailyDetailsWeb
 } = require("./attendance.controller");
 const { complaintStatusSchema } = require("./attendance.validation");
 
@@ -28,5 +30,9 @@ router.post("/attendanceMonthlySummary-web", attendanceMonthlySummaryWeb);
 router.post("/attendanceDailySummary", attendanceDailySummary);
 
 router.post("/attendanceDailySummary-web",  attendanceDailySummaryWeb);
+
+router.post("/attendanceDailyDetails", attendanceDailyDetails);
+
+router.post("/attendanceDailyDetails-web", attendanceDailyDetailsWeb);
 
 module.exports = router;

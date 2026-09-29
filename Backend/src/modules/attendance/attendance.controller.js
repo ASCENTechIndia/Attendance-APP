@@ -4,7 +4,9 @@ const {
   attendanceMonthlySummaryService,
   attendanceDailySummaryService,
   attendanceMonthlySummaryServiceWeb,
-  attendanceDailySummaryServiceWeb
+  attendanceDailySummaryServiceWeb,
+  attendanceDailyDetailsService,
+  attendanceDailyDetailsServiceWeb
 } = require("./attendance.service");
 const { auditLog } = require("../../utils/audit-log");
 const { logApiSuccess, logApiError } = require("../../utils/log");
@@ -242,11 +244,67 @@ const userId = body.userId || "ALL";
   }
 }
 
+async function attendanceDailyDetails(req, res, next) {
+  try {
+    const body = req.body || {};
+
+    const userId = body.userId || "";
+    const month = body.month || "ALL";
+    const year = body.year || "ALL";
+
+    const rows = await attendanceDailyDetailsService(
+      userId,
+      month,
+      year
+    );
+
+    return res.ok(rows);
+  } catch (error) {
+    logApiError(
+      req,
+      500,
+      error.message,
+      "Attendance daily details error"
+    );
+
+    return next(error);
+  }
+}
+
+async function attendanceDailyDetailsWeb(req, res, next) {
+  try {
+    const body = req.body || {};
+
+    const userId = body.userId || "";
+    const month = body.month || "ALL";
+    const year = body.year || "ALL";
+
+    const rows = await attendanceDailyDetailsServiceWeb(
+      userId,
+      month,
+      year
+    );
+
+    return res.ok(rows);
+  } catch (error) {
+    logApiError(
+      req,
+      500,
+      error.message,
+      "Attendance daily details web error"
+    );
+
+    return next(error);
+  }
+}
+
 module.exports = {
   attendanceButtonFlag,
   attendanceIns,
   attendanceMonthlySummary,
   attendanceDailySummary,
   attendanceMonthlySummaryWeb,
-  attendanceDailySummaryWeb
+  attendanceDailySummaryWeb,
+  attendanceDailyDetails,
+  attendanceDailyDetailsWeb
 };

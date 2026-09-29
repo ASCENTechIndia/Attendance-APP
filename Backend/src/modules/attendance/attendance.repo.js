@@ -12,7 +12,8 @@ async function attendanceButtonFlagRepo(payload) {
         :OUT_PUNCHIN_FLAG,
         :OUT_PUNCHOUT_FLAG,
         :OUT_ERRCODE,
-        :OUT_ERRMSG
+        :OUT_ERRMSG,
+        :OUT_PUNCHINTIME
       );
     END;
   `;
@@ -44,6 +45,12 @@ async function attendanceButtonFlagRepo(payload) {
       type: oracledb.STRING,
       maxSize: 1000,
     },
+
+    OUT_PUNCHINTIME: {
+      dir: oracledb.BIND_OUT,
+      type: oracledb.STRING,
+      maxSize: 1000,
+    },
   };
 
   const result = await executeProcedure({
@@ -59,6 +66,7 @@ async function attendanceButtonFlagRepo(payload) {
     punchOutFlag: out.OUT_PUNCHOUT_FLAG,
     errorCode: out.OUT_ERRCODE,
     message: out.OUT_ERRMSG,
+    punchInTime: out.OUT_PUNCHINTIME
   };
 }
 
@@ -474,11 +482,210 @@ async function attendanceDailySummaryRepoWeb(date, userId) {
   return response;
 }
 
+async function attendanceDailyDetailsRepo(userId, month, year) {
+  let sql = `
+    SELECT
+      LISTAGG(a, '#') WITHIN GROUP (ORDER BY a) AS RESULT
+    FROM (
+      SELECT
+        emp_name
+        || '~' || atten_date
+        || '!' || punchin_time
+        || '~' || punchout_time
+        || '!' || punchin_time_2
+        || '~' || punchout_time_2 AS a
+
+      FROM (
+        SELECT
+          d.var_user_username AS emp_name,
+
+          TRUNC(dat_attend_punchin_time) AS atten_date,
+
+          TO_CHAR(
+            dat_attend_punchin_time,
+            'HH24.MI'
+          ) || ' ' ||
+          TO_CHAR(
+            dat_attend_punchin_time,
+            'AM'
+          ) AS punchin_time,
+
+          TO_CHAR(
+            dat_attend_punchout_time,
+            'HH24.MI'
+          ) || ' ' ||
+          TO_CHAR(
+            dat_attend_punchout_time,
+            'AM'
+          ) AS punchout_time,
+
+          TO_CHAR(
+            dat_attend_punchin_2_time,
+            'HH24.MI'
+          ) || ' ' ||
+          TO_CHAR(
+            dat_attend_punchin_2_time,
+            'AM'
+          ) AS punchin_time_2,
+
+          TO_CHAR(
+            dat_attend_punchout_2_time,
+            'HH24.MI'
+          ) || ' ' ||
+          TO_CHAR(
+            dat_attend_punchout_2_time,
+            'AM'
+          ) AS punchout_time_2
+
+        FROM aorts_attendance_mas
+
+        INNER JOIN admins.aoma_user_def d
+          ON d.num_user_userid = var_attend_empid
+
+        WHERE 1 = 1
+  `;
+
+  const binds = {};
+
+  // User filter
+  if (userId && userId !== "ALL") {
+    sql += `
+      AND d.num_user_userid = :userId
+    `;
+
+    binds.userId = userId;
+  }
+
+  // Month filter
+  if (month && month !== "ALL") {
+    sql += `
+      AND UPPER(var_attendance_month) = UPPER(:month)
+    `;
+
+    binds.month = month;
+  }
+
+  // Year filter
+  if (year && year !== "ALL") {
+    sql += `
+      AND var_attendance_year = :year
+    `;
+
+    binds.year = year;
+  }
+
+  sql += `
+      )
+    )
+  `;
+
+  const result = await executeQuery(sql, binds);
+
+  const rows = result.rows || [];
+
+  return rows;
+}
+
+async function attendanceDailyDetailsRepoWeb(userId, month, year) {
+  let sql = `
+    SELECT
+      d.var_user_username AS username,
+
+      TRUNC(dat_attend_punchin_time) AS "attendanceDate",
+
+      TO_CHAR(
+        dat_attend_punchin_time,
+        'HH24.MI'
+      ) || ' ' ||
+      TO_CHAR(
+        dat_attend_punchin_time,
+        'AM'
+      ) AS "punchInTime",
+
+      TO_CHAR(
+        dat_attend_punchout_time,
+        'HH24.MI'
+      ) || ' ' ||
+      TO_CHAR(
+        dat_attend_punchout_time,
+        'AM'
+      ) AS "punchOutTime",
+
+      TO_CHAR(
+        dat_attend_punchin_2_time,
+        'HH24.MI'
+      ) || ' ' ||
+      TO_CHAR(
+        dat_attend_punchin_2_time,
+        'AM'
+      ) AS "punchInTime2",
+
+      TO_CHAR(
+        dat_attend_punchout_2_time,
+        'HH24.MI'
+      ) || ' ' ||
+      TO_CHAR(
+        dat_attend_punchout_2_time,
+        'AM'
+      ) AS "punchOutTime2"
+
+    FROM aorts_attendance_mas
+
+    INNER JOIN admins.aoma_user_def d
+      ON d.num_user_userid = var_attend_empid
+
+    WHERE 1 = 1
+  `;
+
+  const binds = {};
+
+  // User filter
+  if (userId && userId !== "ALL") {
+    sql += `
+      AND d.num_user_userid = :userId
+    `;
+
+    binds.userId = userId;
+  }
+
+  // Month filter
+  if (month && month !== "ALL") {
+    sql += `
+      AND UPPER(var_attendance_month) = UPPER(:month)
+    `;
+
+    binds.month = month;
+  }
+
+  // Year filter
+  if (year && year !== "ALL") {
+    sql += `
+      AND var_attendance_year = :year
+    `;
+
+    binds.year = year;
+  }
+
+  sql += `
+    ORDER BY
+      d.var_user_username,
+      TRUNC(dat_attend_punchin_time)
+  `;
+
+  const result = await executeQuery(sql, binds);
+
+  const rows = result.rows || [];
+
+  return rows;
+}
+
 module.exports = {
   attendanceButtonFlagRepo,
   attendanceInsRepo,
   attendanceMonthlySummaryRepo,
   attendanceDailySummaryRepo,
   attendanceMonthlySummaryRepoWeb,
-  attendanceDailySummaryRepoWeb
+  attendanceDailySummaryRepoWeb,
+  attendanceDailyDetailsRepo,
+  attendanceDailyDetailsRepoWeb
 };
