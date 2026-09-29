@@ -21,6 +21,11 @@ export default function Sidebar() {
       icon: "bi-calendar-day",
       label: "Daily Attendance",
     },
+    {
+      path: "/daily-attendance-details",
+      icon: "bi-calendar-day",
+      label: "Daily Attendance Details"
+    }
       ],
   
     };

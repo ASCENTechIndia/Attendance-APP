@@ -31,6 +31,7 @@ import ServerError from './pages/ServerError';
 import HomeRedirect from './pages/HomeRedirect';
 import AttendanceMonthlySummary from './pages/attendance/AttendanceMonthlySummary';
 import AttendanceDailySummary from './pages/attendance/AttendanceDailySummary';
+import DailyAttendanceDetails from './pages/attendance/DailyAttendanceDetails';
 function App() {
   return (
     <AuthProvider>
@@ -57,25 +58,34 @@ function App() {
               <Route path="/alerts" element={<ProtectedRoute><Alerts /></ProtectedRoute>} />
               <Route path="/modals" element={<ProtectedRoute><Modals /></ProtectedRoute>} />
               <Route path="/blank" element={<ProtectedRoute><Blank /></ProtectedRoute>} />
-  
 
-                 <Route
-                  path="/monthly-attendance-summary"
-                  element={
-                    <ProtectedRoute>
-                      <AttendanceMonthlySummary/>
-                    </ProtectedRoute>
-                  }
-                />
 
-                <Route
-                  path="/daily-attendance-summary"
-                  element={
-                    <ProtectedRoute>
-                      <AttendanceDailySummary/>
-                    </ProtectedRoute>
-                  }
-                />
+              <Route
+                path="/monthly-attendance-summary"
+                element={
+                  <ProtectedRoute>
+                    <AttendanceMonthlySummary />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/daily-attendance-summary"
+                element={
+                  <ProtectedRoute>
+                    <AttendanceDailySummary />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/daily-attendance-details"
+                element={
+                  <ProtectedRoute>
+                    <DailyAttendanceDetails />
+                  </ProtectedRoute>
+                }
+              />
 
               {/* Error Routes */}
               <Route path="/500" element={<ServerError />} />
