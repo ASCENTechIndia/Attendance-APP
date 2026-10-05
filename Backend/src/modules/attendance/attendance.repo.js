@@ -246,15 +246,17 @@ async function attendanceMonthlySummaryRepoWeb(month, year) {
         var_attendance_month,
         var_attendance_year,
 
-        TO_NUMBER(
-          TO_CHAR(
-            LAST_DAY(
-              TO_DATE(
-                TRUNC(dat_attend_insdt),
-                'DD-MM-YYYY'
-              )
-            ),
-            'DD'
+        MAX(
+          TO_NUMBER(
+            TO_CHAR(
+              LAST_DAY(
+                TO_DATE(
+                  TRUNC(dat_attend_insdt),
+                  'DD-MM-YYYY'
+                )
+              ),
+              'DD'
+            )
           )
         ) AS total_days,
 
@@ -298,8 +300,7 @@ async function attendanceMonthlySummaryRepoWeb(month, year) {
       GROUP BY
         var_user_username,
         var_attendance_month,
-        var_attendance_year,
-        TRUNC(dat_attend_insdt)
+        var_attendance_year
     )
     ORDER BY
       var_user_username
@@ -503,7 +504,7 @@ async function attendanceDailyDetailsRepo(userId, month, year) {
 
           TO_CHAR(
             dat_attend_punchin_time,
-            'HH24.MI'
+            'HH12.MI'
           ) || ' ' ||
           TO_CHAR(
             dat_attend_punchin_time,
@@ -512,7 +513,7 @@ async function attendanceDailyDetailsRepo(userId, month, year) {
 
           TO_CHAR(
             dat_attend_punchout_time,
-            'HH24.MI'
+            'HH12.MI'
           ) || ' ' ||
           TO_CHAR(
             dat_attend_punchout_time,
@@ -521,7 +522,7 @@ async function attendanceDailyDetailsRepo(userId, month, year) {
 
           TO_CHAR(
             dat_attend_punchin_2_time,
-            'HH24.MI'
+            'HH12.MI'
           ) || ' ' ||
           TO_CHAR(
             dat_attend_punchin_2_time,
@@ -530,7 +531,7 @@ async function attendanceDailyDetailsRepo(userId, month, year) {
 
           TO_CHAR(
             dat_attend_punchout_2_time,
-            'HH24.MI'
+            'HH12.MI'
           ) || ' ' ||
           TO_CHAR(
             dat_attend_punchout_2_time,
@@ -595,7 +596,7 @@ async function attendanceDailyDetailsRepoWeb(userId, month, year) {
 
       TO_CHAR(
         dat_attend_punchin_time,
-        'HH24.MI'
+        'HH12.MI'
       ) || ' ' ||
       TO_CHAR(
         dat_attend_punchin_time,
@@ -604,7 +605,7 @@ async function attendanceDailyDetailsRepoWeb(userId, month, year) {
 
       TO_CHAR(
         dat_attend_punchout_time,
-        'HH24.MI'
+        'HH12.MI'
       ) || ' ' ||
       TO_CHAR(
         dat_attend_punchout_time,
@@ -613,7 +614,7 @@ async function attendanceDailyDetailsRepoWeb(userId, month, year) {
 
       TO_CHAR(
         dat_attend_punchin_2_time,
-        'HH24.MI'
+        'HH12.MI'
       ) || ' ' ||
       TO_CHAR(
         dat_attend_punchin_2_time,
@@ -622,7 +623,7 @@ async function attendanceDailyDetailsRepoWeb(userId, month, year) {
 
       TO_CHAR(
         dat_attend_punchout_2_time,
-        'HH24.MI'
+        'HH12.MI'
       ) || ' ' ||
       TO_CHAR(
         dat_attend_punchout_2_time,

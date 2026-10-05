@@ -2,6 +2,7 @@ import Layout from "../../components/Layout";
 import { useEffect, useMemo, useState } from "react";
 import apiClient from "../../services/apiClient";
 import { useLoader } from "../../context/LoaderContext";
+import * as XLSX from 'xlsx';
 
 const MONTHS = [
   { label: "January", value: "JAN" },
@@ -146,6 +147,39 @@ const AttendanceMonthlySummary = () => {
     fetchAttendanceSummary();
   }, [filters.month, filters.year]);
 
+  const handleExportExcel = () => 
+  {
+    if(!attendanceData.length)
+    {
+      return;
+    }
+
+    const exportData = attendanceData.map((item,index)=>({
+      "Sr. No.": index + 1,
+    "Employee Name": item.username || "-",
+    "Month": item.month || "-",
+    "Year": item.year || "-",
+    "Total Days": item.totalDays,
+    "Present": item.totalPresent,
+    "Absent": item.totalAbsent,
+    }))
+
+    const workSheet = XLSX.utils.json_to_sheet(exportData);
+
+    const workBook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+      workBook,
+      workSheet,
+      "Monthly Attendance"
+    )
+
+    XLSX.writeFile(
+      workBook,
+      `Monthly_Attendance_${filters.month}_${filters.year}.xlsx`
+    );
+  }
+
   return (
     <Layout>
       <div className="panel">
@@ -202,16 +236,28 @@ const AttendanceMonthlySummary = () => {
               </select>
             </div>
 
-            <div className="filter-group">
-              <button
-                type="button"
-                className="btn-clear-filters"
-                onClick={handleClearFilters}
-              >
-                <i className="bi bi-x-lg me-1"></i>
-                Clear
-              </button>
-            </div>
+           <div className="filter-group">
+  <button
+    type="button"
+    className="btn-clear-filters"
+    onClick={handleClearFilters}
+  >
+    <i className="bi bi-x-lg me-1"></i>
+    Clear
+  </button>
+</div>
+
+<div className="filter-group">
+   <button
+  type="button"
+  className="btn btn-success"
+  onClick={handleExportExcel}
+  disabled={!attendanceData.length}
+  title="Export to Excel"
+>
+  <i className="bi bi-file-earmark-excel"></i>
+</button>
+</div>
           </div>
         </div>
 

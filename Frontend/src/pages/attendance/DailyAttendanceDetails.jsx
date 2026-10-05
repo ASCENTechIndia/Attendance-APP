@@ -2,6 +2,7 @@ import Layout from "../../components/Layout";
 import { useEffect, useMemo, useState } from "react";
 import apiClient from "../../services/apiClient";
 import { useLoader } from "../../context/LoaderContext";
+import * as XLSX from 'xlsx';
 
 const MONTHS = [
     { label: "January", value: "JAN" },
@@ -168,6 +169,37 @@ const DailyAttendanceDetails = () => {
         fetchDailyAttendanceDetails();
     }, [filters.month, filters.year]);
 
+    const handleExportExcel = () => {
+    if (!dailyAttendanceData.length) {
+        return;
+    }
+
+    const exportData = dailyAttendanceData.map((item, index) => ({
+        "Sr. No.": index + 1,
+        "Employee Name": item.username || "-",
+        "Date": formatDate(item.date) || "-",
+        "1st Punch In": item.firstPunchIn || "-",
+        "1st Punch Out": item.firstPunchOut || "-",
+        "2nd Punch In": item.secondPunchIn || "-",
+        "2nd Punch Out": item.secondPunchOut || "-",
+    }));
+
+    const workSheet = XLSX.utils.json_to_sheet(exportData);
+
+    const workBook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+        workBook,
+        workSheet,
+        "Daily Attendance"
+    );
+
+    XLSX.writeFile(
+        workBook,
+        `Daily_Attendance_${filters.month}_${filters.year}.xlsx`
+    );
+};
+
     return (
         <Layout>
             <div className="panel">
@@ -232,6 +264,18 @@ const DailyAttendanceDetails = () => {
                                 <i className="bi bi-x-lg me-1"></i>
                                 Clear
                             </button>
+                        </div>
+
+                        <div className="filter-group">
+                            <button
+        type="button"
+        className="btn btn-success"
+        onClick={handleExportExcel}
+        disabled={!dailyAttendanceData.length}
+        title="Export to Excel"
+    >
+        <i className="bi bi-file-earmark-excel"></i>
+    </button>
                         </div>
                     </div>
 
