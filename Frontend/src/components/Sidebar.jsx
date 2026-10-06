@@ -12,22 +12,27 @@ export default function Sidebar() {
     const allLinks = {
       supervisor: [
         {
-      path: "/monthly-attendance-summary",
-      icon: "bi-calendar-check",
-      label: "Monthly Attendance",
-    },
-    {
-      path: "/daily-attendance-summary",
-      icon: "bi-calendar-day",
-      label: "Daily Attendance",
-    },
-    {
-      path: "/daily-attendance-details",
-      icon: "bi-calendar-day",
-      label: "Daily Attendance Details"
-    }
+          path: "/monthly-attendance-summary",
+          icon: "bi-calendar-check",
+          label: "Monthly Attendance",
+        },
+        {
+          path: "/daily-attendance-summary",
+          icon: "bi-calendar-day",
+          label: "Daily Attendance",
+        },
+        {
+          path: "/daily-attendance-details",
+          icon: "bi-calendar-day",
+          label: "Daily Attendance Details"
+        },
+        {
+          path: "/attendance-report",
+          icon: "bi-calendar-day",
+          label: "Attendance Report"
+        }
       ],
-  
+
     };
 
     if (user?.designation === "Supervisor") return allLinks.supervisor;

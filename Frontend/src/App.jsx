@@ -32,6 +32,7 @@ import HomeRedirect from './pages/HomeRedirect';
 import AttendanceMonthlySummary from './pages/attendance/AttendanceMonthlySummary';
 import AttendanceDailySummary from './pages/attendance/AttendanceDailySummary';
 import DailyAttendanceDetails from './pages/attendance/DailyAttendanceDetails';
+import AttendanceReport from './pages/attendance/AttendanceReport';
 function App() {
   return (
     <AuthProvider>
@@ -83,6 +84,15 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <DailyAttendanceDetails />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route 
+                path='/attendance-report'
+                element={
+                  <ProtectedRoute>
+                    <AttendanceReport />
                   </ProtectedRoute>
                 }
               />
