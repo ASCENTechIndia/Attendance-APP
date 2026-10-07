@@ -433,17 +433,13 @@ const AttendanceReport = () => {
                                 onChange={handleFilterChange}
                                 style={{ width: "140px" }}
                             >
-
                                 <option value="ALL">All Months</option>
-
                                 {MONTHS.map((month) => (
                                     <option key={month.value} value={month.value}>
                                         {month.label}
                                     </option>
                                 ))}
-
                             </select>
-
                         </div>
 
                         <div className="filter-group">
