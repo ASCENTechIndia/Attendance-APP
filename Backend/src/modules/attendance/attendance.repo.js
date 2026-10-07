@@ -680,6 +680,62 @@ async function attendanceDailyDetailsRepoWeb(userId, month, year) {
   return rows;
 }
 
+async function attendanceMonthlyRegisterRepo(payload) {
+  const statement = `
+    BEGIN
+      aorts.AORTS_attendance_MONTHLY_REGISTER(
+        :P_USERID,
+        :P_MONTH,
+        :P_YEAR,
+        :P_SHIFT_ID,
+        :P_RESULT,
+        :OUT_ERRCODE,
+        :OUT_ERRMSG
+      );
+    END;
+  `;
+
+  const binds = {
+    P_USERID: payload.userId,
+
+    P_MONTH: payload.month,
+
+    P_YEAR: payload.year,
+
+    P_SHIFT_ID: payload.shiftId,
+
+    P_RESULT: {
+      dir: oracledb.BIND_OUT,
+      type: oracledb.CURSOR,
+    },
+
+    OUT_ERRCODE: {
+      dir: oracledb.BIND_OUT,
+      type: oracledb.NUMBER,
+    },
+
+    OUT_ERRMSG: {
+      dir: oracledb.BIND_OUT,
+      type: oracledb.STRING,
+      maxSize: 1000,
+    },
+  };
+
+  const result = await executeProcedure({
+    statement,
+    binds,
+    useTx: false,
+  });
+
+  const out = result.outBinds || {};
+
+  return {
+    data: out.P_RESULT || [],
+    errorCode: out.OUT_ERRCODE,
+    message: out.OUT_ERRMSG,
+  };
+}
+
 module.exports = {
   attendanceButtonFlagRepo,
   attendanceInsRepo,
@@ -688,5 +744,6 @@ module.exports = {
   attendanceMonthlySummaryRepoWeb,
   attendanceDailySummaryRepoWeb,
   attendanceDailyDetailsRepo,
-  attendanceDailyDetailsRepoWeb
+  attendanceDailyDetailsRepoWeb,
+  attendanceMonthlyRegisterRepo
 };
