@@ -451,9 +451,7 @@ const AttendanceReport = () => {
             <div className="panel">
 
                 <div className="panel-header d-flex justify-content-between align-items-center flex-wrap gap-3">
-
                     <div>
-
                         <h2 className="h5 mb-1 section-title">
                             <i className="bi bi-calendar-check me-2"></i>
                             Attendance Report Details
@@ -462,15 +460,11 @@ const AttendanceReport = () => {
                         <p className="text-muted mb-0">
                             View employee attendance details.
                         </p>
-
                     </div>
 
                     <div className="filter-bar d-flex align-items-end gap-3 flex-wrap">
 
-              
-
                         <div className="filter-group">
-
                             <label htmlFor="month">
                                 Month
                             </label>
@@ -504,12 +498,8 @@ const AttendanceReport = () => {
                                     )
                                 )}
                             </select>
-
                         </div>
-
-
                         <div className="filter-group">
-
                             <label htmlFor="year">
                                 Year
                             </label>
@@ -539,12 +529,8 @@ const AttendanceReport = () => {
                                     )
                                 )}
                             </select>
-
                         </div>
-
-
                         <div className="filter-group">
-
                             <label htmlFor="shift">
                                 Shift
                             </label>
@@ -571,12 +557,8 @@ const AttendanceReport = () => {
                                     Rotational
                                 </option>
                             </select>
-
                         </div>
-
-
                         <div className="filter-group">
-
                             <button
                                 type="button"
                                 className="btn-clear-filters"
@@ -587,12 +569,8 @@ const AttendanceReport = () => {
                                 <i className="bi bi-x-lg me-1"></i>
                                 Clear
                             </button>
-
                         </div>
-
-
                         <div className="filter-group">
-
                             <button
                                 type="button"
                                 className="btn btn-success"
@@ -606,11 +584,8 @@ const AttendanceReport = () => {
                             >
                                 <i className="bi bi-file-earmark-excel"></i>
                             </button>
-
                         </div>
-
                     </div>
-
 
                     {error && (
                         <div className="alert alert-danger mt-3">
@@ -618,9 +593,7 @@ const AttendanceReport = () => {
                         </div>
                     )}
 
-
                     {loading && <GlobalLoader />}
-
 
                     <div
                         className="table-responsive mt-3"
@@ -629,19 +602,11 @@ const AttendanceReport = () => {
                             overflow: "auto",
                         }}
                     >
-
                         <table className="table align-middle mb-0">
-
                             <thead>
-
-                               
-
                                 {filters.shift === "2" ? (
                                     <>
-                                       
-
                                         <tr>
-
                                             <th
                                                 rowSpan={2}
                                                 className="text-center"
@@ -672,11 +637,7 @@ const AttendanceReport = () => {
 
                                         </tr>
 
-
-                                        
-
                                         <tr>
-
                                             {dates.map(
                                                 (date) => (
                                                     <React.Fragment
@@ -694,14 +655,10 @@ const AttendanceReport = () => {
                                                     </React.Fragment>
                                                 )
                                             )}
-
                                         </tr>
                                     </>
                                 ) : (
-
-
                                     <tr>
-
                                         {tableHeader.map(
                                             (
                                                 item,
@@ -718,15 +675,10 @@ const AttendanceReport = () => {
                                                 </th>
                                             )
                                         )}
-
                                     </tr>
                                 )}
-
                             </thead>
-
-
                             <tbody>
-
                                 {attendanceReportData.map(
                                     (
                                         employee,
@@ -740,8 +692,6 @@ const AttendanceReport = () => {
                                             }
                                         >
 
-                                          
-
                                             <td className="text-center">
                                                 {
                                                     employeeIndex +
@@ -749,15 +699,12 @@ const AttendanceReport = () => {
                                                 }
                                             </td>
 
-
                                             <td>
                                                 {
                                                     employee.VAR_USER_USERNAME ||
                                                     "-"
                                                 }
                                             </td>
-
-
                                             {filters.shift === "2"
                                                 ? dates.map(
                                                     (date) => {
@@ -796,9 +743,7 @@ const AttendanceReport = () => {
                                                                     date
                                                                 }
                                                             >
-
                                                                 <td className="text-center">
-
                                                                     <AttendanceBadge
                                                                         status={
                                                                             firstStatus
@@ -807,16 +752,12 @@ const AttendanceReport = () => {
 
                                                                 </td>
 
-
-
                                                                 <td className="text-center">
-
                                                                     <AttendanceBadge
                                                                         status={
                                                                             secondStatus
                                                                         }
                                                                     />
-
                                                                 </td>
 
                                                             </React.Fragment>
@@ -824,8 +765,6 @@ const AttendanceReport = () => {
                                                     }
                                                 )
                                                 : (
-
-
                                                     dates.map(
                                                         (date) => {
 
@@ -863,19 +802,13 @@ const AttendanceReport = () => {
                                                         }
                                                     )
                                                 )}
-
                                         </tr>
                                     )
                                 )}
-
                             </tbody>
-
                         </table>
-
                     </div>
-
                 </div>
-
             </div>
         </Layout>
     );
