@@ -6,7 +6,8 @@ const {
   attendanceMonthlySummaryRepoWeb,
   attendanceDailySummaryRepoWeb,
   attendanceDailyDetailsRepo,
-  attendanceDailyDetailsRepoWeb
+  attendanceDailyDetailsRepoWeb,
+  attendanceMonthlyRegisterRepo
 } = require("./attendance.repo");
 
 
@@ -42,6 +43,10 @@ async function attendanceDailyDetailsServiceWeb(userId, month, year) {
   return attendanceDailyDetailsRepoWeb(userId, month, year);
 }
 
+async function attendanceMonthlyRegisterService(payload) {
+  return attendanceMonthlyRegisterRepo(payload);
+}
+
 module.exports = {
   attendanceButtonFlagService,
   attendanceInsService,
@@ -50,5 +55,6 @@ module.exports = {
   attendanceMonthlySummaryServiceWeb,
   attendanceDailySummaryServiceWeb,
   attendanceDailyDetailsService,
-  attendanceDailyDetailsServiceWeb
+  attendanceDailyDetailsServiceWeb,
+  attendanceMonthlyRegisterService
 };

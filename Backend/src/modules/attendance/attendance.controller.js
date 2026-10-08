@@ -6,7 +6,8 @@ const {
   attendanceMonthlySummaryServiceWeb,
   attendanceDailySummaryServiceWeb,
   attendanceDailyDetailsService,
-  attendanceDailyDetailsServiceWeb
+  attendanceDailyDetailsServiceWeb,
+  attendanceMonthlyRegisterService
 } = require("./attendance.service");
 const { auditLog } = require("../../utils/audit-log");
 const { logApiSuccess, logApiError } = require("../../utils/log");
@@ -298,6 +299,66 @@ async function attendanceDailyDetailsWeb(req, res, next) {
   }
 }
 
+async function attendanceMonthlyRegister(req, res, next) {
+  try {
+    const body = req.body || {};
+
+    const payload = {
+      userId: body.userId,
+      month: Number(body.month),
+      year: Number(body.year),
+      shiftId: Number(body.shiftId),
+    };
+
+    const out = await attendanceMonthlyRegisterService(payload);
+
+    const isSuccess = String(out.errorCode) === "9999";
+
+    if (isSuccess) {
+      logApiSuccess(
+        req,
+        200,
+        {},
+        "Attendance monthly register fetched successfully"
+      );
+    } else {
+      logApiError(
+        req,
+        400,
+        out.message,
+        "Attendance monthly register fetch failed"
+      );
+    }
+
+    auditLog({
+      action: "ATTENDANCE_MONTHLY_REGISTER",
+      actor: req.user?.userId || payload.userId || "system",
+      module: "authAttendance",
+      status: isSuccess ? "SUCCESS" : "FAILED",
+      details: {
+        outErrorCode: out.errorCode,
+        outErrorMsg: out.message,
+        month: payload.month,
+        year: payload.year,
+        shiftId: payload.shiftId,
+        recordCount: out.data?.length || 0,
+      },
+      requestMeta: requestMeta(req),
+    });
+
+    return res.ok(out);
+  } catch (error) {
+    logApiError(
+      req,
+      500,
+      error.message,
+      "Attendance monthly register error"
+    );
+
+    return next(error);
+  }
+}
+
 module.exports = {
   attendanceButtonFlag,
   attendanceIns,
@@ -306,5 +367,6 @@ module.exports = {
   attendanceMonthlySummaryWeb,
   attendanceDailySummaryWeb,
   attendanceDailyDetails,
-  attendanceDailyDetailsWeb
+  attendanceDailyDetailsWeb,
+  attendanceMonthlyRegister
 };
