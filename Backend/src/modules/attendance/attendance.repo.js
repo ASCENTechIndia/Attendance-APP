@@ -698,11 +698,11 @@ async function attendanceMonthlyRegisterRepo(payload) {
   const binds = {
     P_USERID: payload.userId,
 
-    P_MONTH: payload.month,
+    P_MONTH: Number(payload.month),
 
-    P_YEAR: payload.year,
+    P_YEAR: Number(payload.year),
 
-    P_SHIFT_ID: payload.shiftId,
+    P_SHIFT_ID: Number(payload.shiftId),
 
     P_RESULT: {
       dir: oracledb.BIND_OUT,
@@ -730,7 +730,7 @@ async function attendanceMonthlyRegisterRepo(payload) {
   const out = result.outBinds || {};
 
   return {
-    data: out.P_RESULT || [],
+    data: Array.isArray(out.P_RESULT) ? out.P_RESULT : [],
     errorCode: out.OUT_ERRCODE,
     message: out.OUT_ERRMSG,
   };
